@@ -23,22 +23,24 @@ const createToken = (req, res, next) => {
             payload.exp = expires
         }
         const token = jwt.sign(payload, TOKEN_SECRET)
-        return res.send(token)
+        return res.send({token})
     }
     return res.sendStatus(401)
 }
 
-const verifyToken = (req, res, next) => {
+const verifyToken = (socket, next) => {
+
+    const {query: {token}} = socket.handshake
+
     const {TOKEN_SECRET} = process.env
-    const token = req.header('Authorization')
     if (!token) {
-        return next(badRequest('Missing token'))
+        return next(new Error('Authentication error'))
     }
-    jwt.verify(token, TOKEN_SECRET, (err /* , decoded */) => {
+    jwt.verify(token, TOKEN_SECRET, (err) => {
         if (err) {
-            return res.sendStatus(403)
+            return next(new Error('Authentication error'))
         }
-        return res.send('ok')
+        return next()
     })
 }
 
