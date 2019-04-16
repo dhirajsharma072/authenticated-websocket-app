@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Interactive Form Demo</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ"
+          crossorigin="anonymous">
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"
+            integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+            crossorigin="anonymous"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+            crossorigin="anonymous"></script>
+    <style>
+        body {
+            margin-top: 25px;
+        }
+
+        .container {
+            max-width: 900px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+<div class="container">
+    <div class="header clearfix">
+        <h3 class="text-muted">Authenticated web-socket application</h3>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <form id="authForm" method="GET" action="#">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="email">User email</label>
+                            <input type="email" class="form-control" id="email" placeholder="email"
+                                   value="test@test.com">
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="password"
+                                   value="TEST@Passw">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="token"> Auth Token</label>
+                            <input type="text" value="" class="form-control" name="token" id="token"
+                                   placeholder="Token">
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 15px">
+                    <div class="col-sm-12">
+                        <button type="button" id="tokenizeBtn" class="btn btn-warning">Retrieve Token</button>
+                        <button type="button" id="initSocket" class="btn btn-warning">Get Server time</button>
+                    </div>
+                    <div class="col-sm-12">
+                        <br>
+                        <br>
+                        Please open developer tool console to check the time!
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    $('#tokenizeBtn').on('click', function () {
+        $.ajax({
+            type: "post",
+            url: "http://127.0.0.1:3000/auth/token",
+            dataType: "json",
+            data: {
+                email: $('#email').val(),
+                password: $('#password').val()
+            },
+            success: function (response) {
+                if (response.token) {
+                    $('#token').val(response.token);
+                } else {
+                    console.error(response);
+                }
+            }
+        })
+    });
+
+    $('#initSocket').on('click', () => {
+        const socket = io.connect('http://localhost:3000', {
+            query: {
+                token: $('#token').val()
+            }
+        });
+        socket.on('time', (data) => {
+            console.log(data);
+        });
+        socket.on('error', (error) => {
+            console.log(error);
+            alert(error);
+        });
+    });
+</script>
+
+</html>
