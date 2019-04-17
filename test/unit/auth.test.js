@@ -1,5 +1,7 @@
 const _ = require('lodash')
 const {createToken, verifyToken} = require('../../controllers/auth')
+const authController = require('../../controllers/auth')
+const contant = require('../../constant')
 
 describe('Unit', () => {
     describe('Auth Controller', () => {
@@ -35,7 +37,7 @@ describe('Unit', () => {
                 const mockNext = (error) => {
                     expect(error).toBeFalsy()
                 }
-                createToken(req, mockedResponse, mockNext)
+                authController.createToken(req, mockedResponse, mockNext)
             })
             it('should throw error when invalid payload are being passed', () => {
                 const req = {
@@ -50,9 +52,9 @@ describe('Unit', () => {
                 };
                 const mockNext = (error) => {
                     expect(error.status).toBe(400)
-                    expect(error.message).toBe('Missing parameter')
+                    expect(error.message).toBe(contant.MISSING_PARAMS)
                 }
-                createToken(req, mockedResponse, mockNext)
+                authController.createToken(req, mockedResponse, mockNext)
             })
             it('should throw error when invalid credentials are being passed', () => {
                 const req = {
@@ -71,7 +73,7 @@ describe('Unit', () => {
                 };
                 const mockNext = (error) => {
                 }
-                createToken(req, mockedResponse, mockNext)
+                authController.createToken(req, mockedResponse, mockNext)
             })
         })
         describe('verifyToken', () => {
@@ -86,7 +88,7 @@ describe('Unit', () => {
                 const mockNext = (error) => {
                     expect(error).toBeFalsy()
                 }
-                verifyToken(socket, mockNext)
+                authController.verifyToken(socket, mockNext)
             })
             it('should throw error when invalid token is being passed', () => {
                 const socket = {
@@ -97,9 +99,9 @@ describe('Unit', () => {
                     }
                 }
                 const mockNext = (error) => {
-                    expect(error.message).toBe('Authentication error')
+                    expect(error.message).toBe(contant.AUTH_ERROR)
                 }
-                verifyToken(socket, mockNext)
+                authController.verifyToken(socket, mockNext)
             })
         })
     })
