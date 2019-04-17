@@ -22,7 +22,7 @@ const createToken = (req, res, next) => {
             expires = Math.floor(Date.now() / 1000) + parseInt(TOKEN_EXPIRY, 10) * 60 // seconds
             payload.exp = expires
         }
-        const token = jwt.sign(payload, TOKEN_SECRET)
+        const token = jwt.sign(payload, TOKEN_SECRET||'!@SEcreaTe3532%(test#4')
         return res.send({token})
     }
     return res.sendStatus(401)

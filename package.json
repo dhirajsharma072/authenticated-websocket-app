@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node -r dotenv/config app.js"
+    "start": "node -r dotenv/config app.js",
+    "test": "NODE_ENV=test jest --config jest.config.js --detectOpenHandles"
   },
   "dependencies": {
-    "bcryptjs": "^2.4.3",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dotenv": "^7.0.0",
@@ -15,8 +15,9 @@
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.0",
-    "socket.io": "^2.2.0",
-    "socketio-jwt": "^4.5.0",
-    "socketio-jwt-auth": "^0.1.0"
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "jest": "^24.7.1"
   }
 }
